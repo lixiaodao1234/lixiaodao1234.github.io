@@ -1,0 +1,130 @@
+/* ========== friends-matery.css - 渐变彩色风格 ========== */
+
+/* 页面标题 */
+.friends-hero {
+  margin: 20px 0 30px;
+  text-align: center;
+}
+
+.friends-hero h1 {
+  font-size: 1.8rem;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* 网格容器 - 一行三个 */
+.friends-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  padding: 10px 0 30px;
+}
+
+/* 卡片基础样式 */
+.friend-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 20px;
+  border-radius: 16px;
+  border: none;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+  overflow: hidden;
+  text-align: center;
+}
+
+.friend-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  z-index: 0;
+  background: linear-gradient(135deg, var(--g1, #00c6ff), var(--g2, #0072ff));
+}
+
+.friend-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.friend-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+/* 头像样式 */
+.friend-card .avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 14px;
+  border: none;
+}
+
+/* 用户名 */
+.friend-card h3 {
+  margin: 0 0 8px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.3;
+}
+
+/* 描述文字 */
+.friend-card p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 6组渐变配色 */
+.friend-card:nth-child(6n+1) { --g1: #00c6ff; --g2: #0072ff; }
+.friend-card:nth-child(6n+2) { --g1: #7f00ff; --g2: #e100ff; }
+.friend-card:nth-child(6n+3) { --g1: #f093fb; --g2: #f5576c; }
+.friend-card:nth-child(6n+4) { --g1: #36d1dc; --g2: #5b86e5; }
+.friend-card:nth-child(6n+5) { --g1: #4facfe; --g2: #00f2fe; }
+.friend-card:nth-child(6n) { --g1: #fa709a; --g2: #fee140; }
+
+/* 低动效偏好 */
+@media (prefers-reduced-motion: reduce) {
+  .friend-card,
+  .friend-card:hover {
+    transform: none;
+  }
+}
+
+/* 平板适配 - 一行两个 */
+@media (max-width: 900px) {
+  .friends-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 手机适配 - 一行一个 */
+@media (max-width: 600px) {
+  .friends-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  
+  .friend-card {
+    padding: 24px 18px;
+  }
+  
+  .friend-card .avatar {
+    width: 56px;
+    height: 56px;
+  }
+}
