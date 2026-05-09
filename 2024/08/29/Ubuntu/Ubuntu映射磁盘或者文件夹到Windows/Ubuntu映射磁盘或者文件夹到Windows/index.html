@@ -1,0 +1,385 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Ubuntu磁盘或者文件夹映射到Windows | 风执意</title><meta name="author" content="风执意"><meta name="copyright" content="风执意"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="1.Ubuntu静态IP的设置systemd-networkd 上网  适合固定服务器，配置一次就行。 无 GUI，不会自动搜 Wi-Fi，不会弹出验证窗口。 很稳定，启动速度快，内存占用少。  NetworkManager 上网  能自动发现 Wi-Fi、自动重连、支持 VPN。 适合桌面用户和需要频繁切换网络的场景。 稍微重一些，占用资源比 networkd 高  1.1 Ubuntu 22.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ubuntu磁盘或者文件夹映射到Windows">
+<meta property="og:url" content="https://lixiaodao1234.github.io/2024/08/29/Ubuntu/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/index.html">
+<meta property="og:site_name" content="风执意">
+<meta property="og:description" content="1.Ubuntu静态IP的设置systemd-networkd 上网  适合固定服务器，配置一次就行。 无 GUI，不会自动搜 Wi-Fi，不会弹出验证窗口。 很稳定，启动速度快，内存占用少。  NetworkManager 上网  能自动发现 Wi-Fi、自动重连、支持 VPN。 适合桌面用户和需要频繁切换网络的场景。 稍微重一些，占用资源比 networkd 高  1.1 Ubuntu 22.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://lixiaodao1234.github.io/img/kenan5.png">
+<meta property="article:published_time" content="2024-08-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-08-28T16:00:00.000Z">
+<meta property="article:author" content="风执意">
+<meta property="article:tag" content="磁盘映射">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://lixiaodao1234.github.io/img/kenan5.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Ubuntu磁盘或者文件夹映射到Windows",
+  "url": "https://lixiaodao1234.github.io/2024/08/29/Ubuntu/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/",
+  "image": "https://lixiaodao1234.github.io/img/kenan5.png",
+  "datePublished": "2024-08-28T16:00:00.000Z",
+  "dateModified": "2024-08-28T16:00:00.000Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "风执意",
+      "url": "https://lixiaodao1234.github.io"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://lixiaodao1234.github.io/2024/08/29/Ubuntu/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css?v=5.5.4"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.1.0/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          const hour = new Date().getHours()
+          const isNight = hour <= 6 || hour >= 18
+          if (theme === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else theme === 'light' ? activateLightMode() : activateDarkMode()
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"top_n_per_article":1,"unescape":false,"pagination":{"enable":true,"hitsPerPage":8},"languages":{"hits_empty":"未找到符合您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":230,"highlightFullpage":false,"highlightMacStyle":true},
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: true,
+    post: true
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: {"chs_to_cht":"已切换为繁体中文","cht_to_chs":"已切换为简体中文","day_to_night":"已切换为深色模式","night_to_day":"已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#1f1f1f","position":"top-right"},
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid@4.13.0/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Ubuntu磁盘或者文件夹映射到Windows',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><link rel="stylesheet" href="/css/custom.css" media="defer" onload="this.media='all'"><link rel="stylesheet" href="/css/friends-matery.css" media="defer" onload="this.media='all'"><script src="/js/remove-img-show.js"></script><meta name="generator" content="Hexo 8.1.1"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><script>(()=>{
+  const $loadingBox = document.getElementById('loading-box')
+  const $body = document.body
+  const preloader = {
+    endLoading: () => {
+      if ($loadingBox.classList.contains('loaded')) return
+      $body.style.overflow = ''
+      $loadingBox.classList.add('loaded')
+    },
+    initLoading: () => {
+      $body.style.overflow = 'hidden'
+      $loadingBox.classList.remove('loaded')
+    }
+  }
+
+  preloader.initLoading()
+
+  if (document.readyState === 'complete') {
+    preloader.endLoading()
+  } else {
+    window.addEventListener('load', preloader.endLoading)
+    document.addEventListener('DOMContentLoaded', preloader.endLoading)
+    // Add timeout protection: force end after 7 seconds
+    setTimeout(preloader.endLoading, 7000)
+  }
+
+  if (false) {
+    btf.addGlobalFn('pjaxSend', preloader.initLoading, 'preloader_init')
+    btf.addGlobalFn('pjaxComplete', preloader.endLoading, 'preloader_end')
+  }
+})()</script><div class="bg-animation" id="web_bg" style="background-image: url(/img/kenan1.png);"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/assets/head1.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/ loading='lazy'></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">19</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-heartbeat"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fas fa-images"></i><span> 摄影</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-envelope"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/img/kenan5.png);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">风执意</span></a><a class="nav-page-title" href="/"><span class="site-name">Ubuntu磁盘或者文件夹映射到Windows</span><span class="site-name"><i class="fa-solid fa-circle-arrow-left"></i><span>  返回首页</span></span></a></span><div id="menus"><div id="search-button"><span class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></span></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fa fa-heartbeat"></i><span> 生活</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page child" href="/photos/"><i class="fa-fw fas fa-images"></i><span> 摄影</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fas fa-envelope"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="post-info"><h1 class="post-title">Ubuntu磁盘或者文件夹映射到Windows</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-08-28T16:00:00.000Z" title="发表于 2024-08-29 00:00:00">2024-08-29</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-08-28T16:00:00.000Z" title="更新于 2024-08-29 00:00:00">2024-08-29</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%8A%80%E6%9C%AF%E5%8D%9A%E5%AE%A2/">技术博客</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">总字数:</span><span class="word-count">926</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><h2 id="1-Ubuntu静态IP的设置"><a href="#1-Ubuntu静态IP的设置" class="headerlink" title="1.Ubuntu静态IP的设置"></a>1.Ubuntu静态IP的设置</h2><p><strong>systemd-networkd 上网</strong></p>
+<ul>
+<li>适合固定服务器，配置一次就行。</li>
+<li>无 GUI，不会自动搜 Wi-Fi，不会弹出验证窗口。</li>
+<li>很稳定，启动速度快，内存占用少。</li>
+</ul>
+<p><strong>NetworkManager 上网</strong></p>
+<ul>
+<li>能自动发现 Wi-Fi、自动重连、支持 VPN。</li>
+<li>适合桌面用户和需要频繁切换网络的场景。</li>
+<li>稍微重一些，占用资源比 networkd 高</li>
+</ul>
+<h3 id="1-1-Ubuntu-22-04-默认使用-Netplan-进行网络配置。"><a href="#1-1-Ubuntu-22-04-默认使用-Netplan-进行网络配置。" class="headerlink" title="1.1 Ubuntu 22.04 默认使用 Netplan 进行网络配置。"></a>1.1 Ubuntu 22.04 默认使用 Netplan 进行网络配置。</h3><p><strong>步骤如下：</strong></p>
+<p>1.编辑配置文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> nano /etc/netplan/01-netcfg.yaml</span><br></pre></td></tr></table></figure>
+
+<p>2.示例配置（适用于有线网卡 <code>ens33</code>，你需根据 <code>ip a</code> 查看实际网卡名）：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">network:</span></span><br><span class="line">  <span class="attr">version:</span> <span class="number">2</span></span><br><span class="line">  <span class="attr">renderer:</span> <span class="string">NetworkManager</span></span><br><span class="line">  <span class="attr">ethernets:</span></span><br><span class="line">    <span class="attr">ens33:</span></span><br><span class="line">      <span class="attr">dhcp4:</span> <span class="literal">no</span></span><br><span class="line">      <span class="attr">addresses:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="number">192.168</span><span class="number">.135</span><span class="number">.100</span><span class="string">/24</span></span><br><span class="line">      <span class="attr">routes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">to:</span> <span class="string">default</span></span><br><span class="line">          <span class="attr">via:</span> <span class="number">192.168</span><span class="number">.135</span><span class="number">.2</span></span><br><span class="line">      <span class="attr">nameservers:</span></span><br><span class="line">        <span class="attr">addresses:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="number">8.8</span><span class="number">.8</span><span class="number">.8</span></span><br><span class="line">          <span class="bullet">-</span> <span class="number">114.114</span><span class="number">.114</span><span class="number">.114</span></span><br></pre></td></tr></table></figure>
+
+<p>3.应用配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> <span class="built_in">chmod</span> 600 /etc/netplan/*.yaml</span><br><span class="line"><span class="built_in">sudo</span> netplan apply</span><br></pre></td></tr></table></figure>
+
+<p>✅ 验证设置是否生效</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ip a      <span class="comment"># 查看 IP 地址</span></span><br><span class="line">ip route  <span class="comment"># 查看默认路由</span></span><br><span class="line">ping 8.8.8.8  <span class="comment"># 测试是否能上网</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="1-2-Ubuntu-20-04-默认使用-Netplan-进行网络配置。"><a href="#1-2-Ubuntu-20-04-默认使用-Netplan-进行网络配置。" class="headerlink" title="1.2 Ubuntu 20.04 默认使用 Netplan 进行网络配置。"></a>1.2 Ubuntu 20.04 默认使用 Netplan 进行网络配置。</h3><p>1.编辑配置文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> nano /etc/netplan/01-netcfg.yaml</span><br></pre></td></tr></table></figure>
+
+<p>2.示例配置（适用于有线网卡 <code>ens33</code>，你需根据 <code>ip a</code> 查看实际网卡名）：</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">network:</span><br><span class="line">  version: 2</span><br><span class="line">  renderer: networkd</span><br><span class="line">  ethernets:</span><br><span class="line">    ens33:</span><br><span class="line">      dhcp4: no</span><br><span class="line">      addresses:</span><br><span class="line">        - 192.168.135.110/24</span><br><span class="line">      gateway4: 192.168.135.2</span><br><span class="line">      nameservers:</span><br><span class="line">        addresses: <span class="section">[8.8.8.8, 114.114.114.114]</span></span><br></pre></td></tr></table></figure>
+
+<p>3.应用配置：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> netplan apply</span><br></pre></td></tr></table></figure>
+
+<p>4.如果ifconfig并没有获取相应静态IP,请查看networkd状态</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl status systemd-networkd</span><br></pre></td></tr></table></figure>
+
+<img src="/2024/08/29/Ubuntu/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/image-20250829112436691.png" class="" title="image-20250829112436691" loading='lazy'>
+
+<p>5.若networkd 服务没有启动，设置networkd 开机自启</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl <span class="built_in">enable</span> systemd-networkd --now</span><br></pre></td></tr></table></figure>
+
+<h3 id="1-3-使用nmcli指令配置静态IP"><a href="#1-3-使用nmcli指令配置静态IP" class="headerlink" title="1.3 使用nmcli指令配置静态IP"></a>1.3 使用nmcli指令配置静态IP</h3><ul>
+<li>连接wifi指令</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> nmcli device wifi connect <span class="string">&quot;发财被爱&quot;</span> password <span class="string">&quot;03151617&quot;</span> ifname wlP2p33s0</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>配置静态IP</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> nmcli connection modify <span class="string">&quot;发财被爱&quot;</span> \</span><br><span class="line">ipv4.method manual \</span><br><span class="line">ipv4.addresses 192.168.31.125/24 \</span><br><span class="line">ipv4.gateway 192.168.31.1 \</span><br><span class="line">ipv4.dns <span class="string">&quot;8.8.8.8,114.114.114.114&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>激活WiFi</li>
+</ul>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> nmcli connection up <span class="string">&quot;发财被爱&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="2-SSH连接"><a href="#2-SSH连接" class="headerlink" title="2.SSH连接"></a>2.SSH连接</h2><p><strong>1.在 Ubuntu 上默认是没有安装 SSH 服务端的（客户端 <code>ssh</code> 有，但 <code>sshd</code> 没有）</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl status ssh</span><br></pre></td></tr></table></figure>
+
+<p>如果提示 <code>Unit ssh.service could not be found</code>，就说明没装。</p>
+<p><strong>2.安装并启动：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt update</span><br><span class="line"><span class="built_in">sudo</span> apt install openssh-server -y</span><br><span class="line"><span class="built_in">sudo</span> systemctl <span class="built_in">enable</span> ssh</span><br><span class="line"><span class="built_in">sudo</span> systemctl start ssh</span><br></pre></td></tr></table></figure>
+
+<p><strong>3.防火墙阻止了 22 端口</strong></p>
+<p>Ubuntu 自带 <code>ufw</code>，可能关掉了 22 端口：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo ufw status</span><br></pre></td></tr></table></figure>
+
+<p>如果是 <code>active</code> 且没有 <code>22/tcp ALLOW</code>，就加上：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo ufw allow 22/tcp</span><br><span class="line">sudo ufw reload</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-将Ubuntu文件夹映射到Windows"><a href="#3-将Ubuntu文件夹映射到Windows" class="headerlink" title="3.将Ubuntu文件夹映射到Windows"></a>3.将Ubuntu文件夹映射到Windows</h2><p>Samba是一种文件共享协议，可以实现Linux和Windows之间的文件共享。要在同一局域网内的Windows上像本地磁盘一样使用Ubuntu硬盘，可以按照以下步骤操作</p>
+<p>1.安装Samba</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt-get install samba</span><br></pre></td></tr></table></figure>
+
+<p>2.修改配置文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> vim /etc/samba/smb.conf</span><br></pre></td></tr></table></figure>
+
+<p>文件末尾添加</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">security</span> = user</span><br><span class="line"><span class="section">[public]</span></span><br><span class="line">        <span class="attr">path</span> = /home/lixiaodao</span><br><span class="line">        <span class="attr">public</span> = <span class="literal">yes</span></span><br><span class="line">        <span class="attr">writeable</span> = <span class="literal">yes</span></span><br><span class="line">        <span class="attr">browseable</span> = <span class="literal">yes</span></span><br><span class="line">        guest <span class="attr">ok</span> = <span class="literal">yes</span></span><br><span class="line">        read <span class="attr">only</span> = <span class="literal">no</span></span><br><span class="line">    	<span class="attr">writable</span> = <span class="literal">yes</span></span><br><span class="line">    	force <span class="attr">user</span> = lixiaodao</span><br><span class="line">        create <span class="attr">mask</span> = <span class="number">0644</span></span><br><span class="line">        acl allow execute <span class="attr">always</span> = <span class="literal">yes</span></span><br></pre></td></tr></table></figure>
+
+<p>这里guest ok &#x3D; no时，</p>
+<p>需要手动在smbd服务里添加账号</p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1）给 ubuntu 这个系统用户创建 Samba 密码</span></span><br><span class="line">sudo smbpasswd -a ubuntu</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2）确保账号启用（一般 -a 时就启用了，再执行一下没坏处）</span></span><br><span class="line">sudo smbpasswd -e ubuntu</span><br></pre></td></tr></table></figure>
+
+<p>3.重启smbd服务</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl restart smbd</span><br></pre></td></tr></table></figure>
+
+<p>4.检查smbd状态是否成功启动：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> systemctl status smbd</span><br></pre></td></tr></table></figure>
+
+<img src="/2024/08/29/Ubuntu/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/Snipaste_2025-06-17_16-50-00.png" class="" loading='lazy'>
+
+<p>5.windows上映射网络驱动器</p>
+<p>Ubuntu的静态IP：192.168.135.100</p>
+<img src="/2024/08/29/Ubuntu/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/Snipaste_2025-06-17_16-53-27.png" class="" loading='lazy'>
+
+<p>映射完成</p>
+<img src="/2024/08/29/Ubuntu/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/Snipaste_2025-06-17_16-57-36.png" class="" loading='lazy'>
+
+<p>这样就可以在windows系统上查看Linux系统上的代码，避免频繁切换到虚拟机的Ubuntu系统可以专注代码。</p>
+<h2 id="4-清理ubuntu磁盘垃圾"><a href="#4-清理ubuntu磁盘垃圾" class="headerlink" title="4.清理ubuntu磁盘垃圾"></a>4.清理ubuntu磁盘垃圾</h2><p>1.进入你的 home，再看哪些子目录占大头：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> <span class="built_in">du</span> -h --max-depth=1 /home/lixiaodao | <span class="built_in">sort</span> -hr | <span class="built_in">head</span> -20</span><br></pre></td></tr></table></figure>
+
+<img src="/2024/08/29/Ubuntu/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/image-20250829113125365.png" class="" title="image-20250829113125365" loading='lazy'>
+
+<p>2.清空回收站</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">rm</span> -rf ~/.local/share/Trash/*</span><br></pre></td></tr></table></figure>
+
+<p>3.清理 apt 缓存</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sudo</span> apt clean</span><br></pre></td></tr></table></figure>
+
+<p>4.清理浏览器&#x2F;应用缓存</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">rm</span> -rf ~/.cache/*</span><br></pre></td></tr></table></figure>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://lixiaodao1234.github.io">风执意</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://lixiaodao1234.github.io/2024/08/29/Ubuntu/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/">https://lixiaodao1234.github.io/2024/08/29/Ubuntu/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/Ubuntu%E6%98%A0%E5%B0%84%E7%A3%81%E7%9B%98%E6%88%96%E8%80%85%E6%96%87%E4%BB%B6%E5%A4%B9%E5%88%B0Windows/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://lixiaodao1234.github.io" target="_blank">风执意</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%A3%81%E7%9B%98%E6%98%A0%E5%B0%84/">磁盘映射</a></div><div class="post-share"><div class="social-share" data-image="/img/kenan5.png" data-sites="facebook,x,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/sharejs/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i>赞助</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" src="/img/wechat.jpg" alt="wechat"/ loading='lazy'></a><div class="post-qr-code-desc">wechat</div></li></ul></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/04/10/Ardupilot/%E6%97%A0%E4%BA%BA%E6%9C%BA%E7%B2%BE%E5%87%86%E9%99%8D%E8%90%BD/%E6%97%A0%E4%BA%BA%E6%9C%BA%E7%B2%BE%E5%87%86%E9%99%8D%E8%90%BD%E6%8A%80%E6%9C%AF%E6%96%B9%E6%A1%88/" title="无人机精准降落技术方案"><img class="cover" src="/img/kenan.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post" loading='lazy'><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">无人机精准降落技术方案</div></div><div class="info-2"><div class="info-item-1">精准降落简述启用并激活精准降落后，将在着陆过程中提供最终定位，而不仅仅是通过GPS数据。如果着陆目标丢失（即没有发生相对于它的位置更新），如果PLND_STRICT设置得当，它将尝试爬升到PLND_RET_BEHAVE确定的位置。然后，它将尝试再次下降，希望看到着陆目标。它将继续执行此操作，直到发生PLND_RET_MAX重试。然后，根据PLND_STRICT，它要么只是着陆，要么会保持在空中盘旋。 除非设置了PLND_OPTIONS位1，否则飞行员在着陆期间手动重新定位将中止着陆。必要时，最终着陆速度可降至LAND_SPEED以下，以确保精确着陆。通过设置PLND_OPTIONS位2，可以禁用此功能以获得更快的最终着陆速度 1. 四旋翼无人机利用IR-LOCK进行精准降落与精准悬停1.1 IR-LOCK工作原理IR-LOCK精准降落系统的工作原理可以概括为以下几个步骤：  信号识别： 当无人机进入着陆区域后，其底部的IR-LOCK传感器开始扫描地面上的红外信标的信号。一旦识别到预设的红外信标信号，传感器会立即锁定该信号。  位置计算： 通过测量红外信标在传感器视野中的位置和相对...</div></div></div></a><a class="pagination-related" href="/2024/04/25/RK3588/3588%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/3588%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" title="3588网络配置"><img class="cover" src="/img/kenan4.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post" loading='lazy'><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">3588网络配置</div></div><div class="info-2"><div class="info-item-1">1. Ubuntu22.04首次网络连接如果你没有网线，或者坚持要 WiFi，就要手动改 netplan 配置 1.1先确定无线网卡名字（应该是 wlan0 或 wlp1s0）1ip link  1.2 编辑 netplan 配置文件：1sudo nano /etc/netplan/01-network-manager-all.yaml  然后写入或修改成类似这样： 123456789network: version: 2 wifis:  wlan0:   dhcp4: true   access-points:     &quot;Li_iPhone&quot;:      password: &quot;12345678&quot;  renderer: networkd  注意缩进！ Netplan 配置文件必须是空格缩进，不能用 Tab 键。 1.3 应用配置保存文件后，运行： 1sudo netplan apply  1.4 检查连接状态1ip a  看看 wlan0 或对应网卡有没有拿到 IP 地址。 或者用：首次网络连接以下指令不可用 12nmcli device ...</div></div></div></a></nav><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/assets/head1.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/ loading='lazy'></div><div class="author-info-name">风执意</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">19</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">17</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/lixiaodao1234"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/lixiaodao1234" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:17555xxxx@gmail.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的博客</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Ubuntu%E9%9D%99%E6%80%81IP%E7%9A%84%E8%AE%BE%E7%BD%AE"><span class="toc-text">1.Ubuntu静态IP的设置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-Ubuntu-22-04-%E9%BB%98%E8%AE%A4%E4%BD%BF%E7%94%A8-Netplan-%E8%BF%9B%E8%A1%8C%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE%E3%80%82"><span class="toc-text">1.1 Ubuntu 22.04 默认使用 Netplan 进行网络配置。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-Ubuntu-20-04-%E9%BB%98%E8%AE%A4%E4%BD%BF%E7%94%A8-Netplan-%E8%BF%9B%E8%A1%8C%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE%E3%80%82"><span class="toc-text">1.2 Ubuntu 20.04 默认使用 Netplan 进行网络配置。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E4%BD%BF%E7%94%A8nmcli%E6%8C%87%E4%BB%A4%E9%85%8D%E7%BD%AE%E9%9D%99%E6%80%81IP"><span class="toc-text">1.3 使用nmcli指令配置静态IP</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-SSH%E8%BF%9E%E6%8E%A5"><span class="toc-text">2.SSH连接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%B0%86Ubuntu%E6%96%87%E4%BB%B6%E5%A4%B9%E6%98%A0%E5%B0%84%E5%88%B0Windows"><span class="toc-text">3.将Ubuntu文件夹映射到Windows</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%B8%85%E7%90%86ubuntu%E7%A3%81%E7%9B%98%E5%9E%83%E5%9C%BE"><span class="toc-text">4.清理ubuntu磁盘垃圾</span></a></li></ol></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2022 - 2026 By 风执意</span></div><div class="footer_custom_text">Markov property—Forgetting past.<p><a target="_blank" href="https://hexo.io/"><img src="https://img.shields.io/badge/Frame-Hexo-blue?style=flat&logo=hexo" title="博客框架为Hexo" loading='lazy'></a>&nbsp;<a target="_blank" href="https://butterfly.js.org/"><img src="https://img.shields.io/badge/Theme-Butterfly-6513df?style=flat&logo=bitdefender" title="主题采用butterfly" loading='lazy'></a>&nbsp;<a target="_blank" href="https://www.jsdelivr.com/"><img src="https://img.shields.io/badge/CDN-jsDelivr-orange?style=flat&logo=jsDelivr" title="本站使用JsDelivr为静态资源提供CDN加速" loading='lazy'></a> &nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Vervel-brightgreen?style=flat&logo=Vercel" title="本站采用双线部署，默认线路托管于Vercel" loading='lazy'></a>&nbsp;<a target="_blank" href="https://vercel.com/ "><img src="https://img.shields.io/badge/Hosted-Coding-0cedbe?style=flat&logo=Codio" title="本站采用双线部署，联通线路托管于Coding" loading='lazy'></a>&nbsp;<a target="_blank" href="https://github.com/"><img src="https://img.shields.io/badge/Source-Github-d021d6?style=flat&logo=GitHub" title="本站项目由Gtihub托管" loading='lazy'></a>&nbsp;<a target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/"><img src="https://img.shields.io/badge/Copyright-BY--NC--SA%204.0-d42328?style=flat&logo=Claris" title="本站采用知识共享署名-非商业性使用-相同方式共享4.0国际许可协议进行许可" loading='lazy'></a></p></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="前往评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.4"></script><script src="/js/main.js?v=5.5.4"></script><script src="https://cdn.jsdelivr.net/npm/instant.page@5.2.0/instantpage.min.js" type="module"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar@0.1.16/dist/snackbar.min.js"></script><div class="js-pjax"><script>(() => {
+  const isShuoshuo = GLOBAL_CONFIG_SITE.pageType === 'shuoshuo'
+  const option = null
+
+  const getGiscusTheme = theme => theme === 'dark' ? 'dark' : 'light'
+
+  const createScriptElement = config => {
+    const ele = document.createElement('script')
+    Object.entries(config).forEach(([key, value]) => {
+      ele.setAttribute(key, value)
+    })
+    return ele
+  }
+
+  const loadGiscus = (el = document, key) => {
+    const mappingConfig = isShuoshuo
+      ? { 'data-mapping': 'specific', 'data-term': key }
+      : { 'data-mapping': (option && option['data-mapping']) || 'pathname' }
+
+    const giscusConfig = {
+      src: 'https://giscus.app/client.js',
+      'data-repo': 'lixiaodao1234/lixiaodao1234.github.io',
+      'data-repo-id': 'R_kgDOSN9P9Q',
+      'data-category-id': 'DIC_kwDOSN9P9c4C8hMc',
+      'data-theme': getGiscusTheme(document.documentElement.getAttribute('data-theme')),
+      'data-reactions-enabled': '1',
+      crossorigin: 'anonymous',
+      async: true,
+      ...option,
+      ...mappingConfig
+    }
+
+    const scriptElement = createScriptElement(giscusConfig)
+
+    el.querySelector('#giscus-wrap').appendChild(scriptElement)
+
+    if (isShuoshuo) {
+      window.shuoshuoComment.destroyGiscus = () => {
+        if (el.children.length) {
+          el.innerHTML = ''
+          el.classList.add('no-comment')
+        }
+      }
+    }
+  }
+
+  const changeGiscusTheme = theme => {
+    const iframe = document.querySelector('#giscus-wrap iframe')
+    if (iframe) {
+      const message = {
+        giscus: {
+          setConfig: {
+            theme: getGiscusTheme(theme)
+          }
+        }
+      }
+      iframe.contentWindow.postMessage(message, 'https://giscus.app')
+    }
+  }
+
+  btf.addGlobalFn('themeChange', changeGiscusTheme, 'giscus')
+
+  if (isShuoshuo) {
+    'Giscus' === 'Giscus'
+      ? window.shuoshuoComment = { loadComment: loadGiscus }
+      : window.loadOtherComment = loadGiscus
+    return
+  }
+
+  if ('Giscus' === 'Giscus' || !false) {
+    if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+    else loadGiscus()
+  } else {
+    window.loadOtherComment = loadGiscus
+  }
+})()</script></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="10" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><i class="fas fa-spinner fa-pulse" id="loading-status" hidden="hidden"></i><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="text-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据加载中</span></div><div class="local-search-input"><input placeholder="搜索文章" type="text"/></div><hr/><div id="local-search-results"></div><div class="ais-Pagination" id="local-search-pagination" style="display:none;"><ul class="ais-Pagination-list"></ul></div><div id="local-search-stats"></div></div><div id="search-mask"></div><script src="/js/search/local-search.js?v=5.5.4"></script></div></div><script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"log":false,"model":{"jsonPath":"/live2dw/assets/hibiki.model.json"},"display":{"position":"left","width":150,"height":380},"mobile":{"show":false},"react":{"opacity":0.7}});</script></body></html>
