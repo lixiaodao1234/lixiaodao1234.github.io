@@ -1,0 +1,165 @@
+/* ===========================================================
+   分类页 - 折叠面板：展开显示该分类下的文章列表
+   作用于 type-categories 页面的 .cat-tree
+   =========================================================== */
+
+.type-categories #page .cat-tree {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 12px 36px;
+  background: var(--card-bg, #fff);
+  border-radius: 14px;
+  box-shadow: var(--card-box-shadow, 0 4px 12px -2px rgba(0, 0, 0, .15));
+}
+
+.type-categories #page .cat-item {
+  position: relative;
+}
+
+.type-categories #page .cat-item:not(:last-child) {
+  border-bottom: 1px solid var(--hr-color, rgba(0, 0, 0, .07));
+}
+
+/* 分类标题行：名称 + 箭头 + 数量 */
+.type-categories #page .cat-row {
+  display: flex;
+  align-items: center;
+  padding: 19px 10px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: padding-left .25s ease, color .25s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 点击/聚焦不残留灰色按钮痕迹 */
+.type-categories #page .cat-row:focus,
+.type-categories #page .cat-row:active,
+.type-categories #page .cat-name:focus,
+.type-categories #page .cat-post-link:focus {
+  outline: none;
+  background: transparent;
+}
+
+.type-categories #page .cat-row:hover {
+  padding-left: 16px;
+}
+
+.type-categories #page .cat-name {
+  flex: 0 1 auto;
+  min-width: 0;
+  font-size: 1.18em;
+  font-weight: 600;
+  color: var(--font-color, #4c4948);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.type-categories #page .cat-row:hover .cat-name {
+  color: var(--text-hover, #49b1f5);
+}
+
+.type-categories #page .cat-arrow {
+  flex: 0 0 auto;
+  margin-left: 8px;
+  font-size: .76em;
+  color: var(--card-meta, #b5b5b5);
+  transition: transform .3s ease, color .25s ease;
+}
+
+.type-categories #page .cat-row:hover .cat-arrow {
+  color: var(--text-hover, #49b1f5);
+}
+
+.type-categories #page .cat-item.has-posts:not(.collapsed) > .cat-row .cat-arrow {
+  transform: rotate(90deg);
+}
+
+/* 文章数量（靠右） */
+.type-categories #page .cat-count {
+  flex: 0 0 auto;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: .9em;
+  color: var(--card-meta, #858585);
+}
+
+.type-categories #page .cat-count i {
+  font-size: .95em;
+  opacity: .8;
+}
+
+/* 文章列表：折叠动画 */
+.type-categories #page .cat-posts {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 6px;
+  overflow: hidden;
+  max-height: 4000px;
+  opacity: 1;
+  transition: max-height .45s ease, opacity .3s ease;
+}
+
+.type-categories #page .cat-item.collapsed > .cat-posts {
+  max-height: 0;
+  opacity: 0;
+  padding-bottom: 0;
+}
+
+.type-categories #page .cat-post-item {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.type-categories #page .cat-post-item::before {
+  content: none !important;
+}
+
+.type-categories #page .cat-post-link {
+  display: block;
+  padding: 10px 14px 10px 26px;
+  margin: 2px 6px;
+  border-radius: 8px;
+  font-size: 1em;
+  color: var(--font-color, #4c4948);
+  text-decoration: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: background-color .2s ease, color .2s ease;
+}
+
+.type-categories #page .cat-post-link::before {
+  content: "";
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  margin-right: 12px;
+  border-radius: 50%;
+  background: var(--text-hover, #49b1f5);
+  opacity: .5;
+  vertical-align: middle;
+}
+
+.type-categories #page .cat-post-link:hover {
+  background: var(--text-hover, #49b1f5);
+  color: #fff;
+}
+
+.type-categories #page .cat-post-link:hover::before {
+  background: #fff;
+  opacity: 1;
+}
+
+@media (max-width: 768px) {
+  .type-categories #page .cat-tree {
+    padding: 4px 14px;
+  }
+  .type-categories #page .cat-name {
+    font-size: 1.05em;
+  }
+}
